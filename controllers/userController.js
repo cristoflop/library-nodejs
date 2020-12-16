@@ -1,36 +1,39 @@
 "use strict"
 
-const validator = require("express-validator");
-
 const User = require("../models/user");
 
 async function getUsers(request, response, next) {
+    let users = await User.find();
     response.status(200);
-    let users = await testUsers();
     response.json(users);
 }
 
 async function getUser(request, response, next) {
-    let user = await testUser(request.params.id);
-    if (user === undefined) {
-        next();
-    } else {
+    let id = request.params.id;
+    try {
+        let user = await User.findById(id);
         response.status(200);
         response.json(user);
+    } catch (error) {
+        next({
+            message: `User with id: ${id} not found`
+        });
     }
 }
 
 async function saveUser(request, response, next) {
-    let userToSave = new User({
-        nick: "cristofer",
-        email: "cristofer@cristofer.com"
-    });
-    let user = await userToSave.save();
-    if (user === undefined) {
-        next();
-    } else {
+    try {
+        let savedUser = await new User({
+            nick: request.body.nick,
+            email: request.body.email
+        }).save();
         response.status(200);
-        response.json(user);
+        response.json(savedUser);
+    } catch (error) {
+        next({
+            message: error.message,
+            details: error
+        });
     }
 }
 
