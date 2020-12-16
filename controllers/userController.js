@@ -21,6 +21,21 @@ async function getUser(request, response, next) {
     }
 }
 
+async function getUserByNick(request, response, next) {
+    let nick = request.params.nick;
+    try {
+        let user = await User.findOne({
+            nick: nick
+        })
+        response.status(200);
+        response.json(user);
+    } catch (error) {
+        next({
+            message: `User called ${nick} not found`
+        });
+    }
+}
+
 async function saveUser(request, response, next) {
     try {
         let savedUser = await new User({
@@ -37,8 +52,32 @@ async function saveUser(request, response, next) {
     }
 }
 
+async function updateUserEmail(request, response, next) {
+    try {
+        let email = request.body.email;
+        let id = request.params.id;
+        let update = await User.update(
+            {
+                _id: id
+            },
+            {
+                email: email
+            });
+        response.status(200);
+        response.json(update);
+    } catch (error) {
+        next({
+            message: error.message,
+            details: error
+        });
+    }
+
+}
+
 module.exports = {
     getUsers: getUsers,
     getUser: getUser,
-    saveUser: saveUser
+    getUserByNick: getUserByNick,
+    saveUser: saveUser,
+    updateUserEmail: updateUserEmail
 }

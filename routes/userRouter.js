@@ -10,7 +10,7 @@ userRouter.get("/users/:id", userController.getUser);
 
 userRouter.post("/users", userController.saveUser);
 
-userRouter.post("/users/:id/update")
+userRouter.post("/users/:id/update", userController.updateUserEmail);
 
 userRouter.delete("/users");
 
