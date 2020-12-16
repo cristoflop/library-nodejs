@@ -12,6 +12,8 @@ async function getUser(request, response, next) {
     let id = request.params.id;
     try {
         let user = await User.findById(id);
+        if (user == null)
+            throw new Error();
         response.status(200);
         response.json(user);
     } catch (error) {
@@ -27,6 +29,8 @@ async function getUserByNick(request, response, next) {
         let user = await User.findOne({
             nick: nick
         })
+        if(user == null)
+            throw new Error();
         response.status(200);
         response.json(user);
     } catch (error) {

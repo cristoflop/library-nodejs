@@ -14,5 +14,4 @@ userRouter.get("/users/:id", userController.getUser);
 
 userRouter.post("/users/:id", userController.updateUserEmail);
 
-
 module.exports = userRouter;
