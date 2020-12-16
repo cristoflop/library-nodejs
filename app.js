@@ -45,21 +45,21 @@ app.use(middlewareNotFound);
 app.use(middlewareServerError);
 
 function middlewareNotFound(request, response) {
-    let error = new Error("Not found")
     response.status(404);
-    response.json(error);
+    response.json({
+        message: `${request.url} not found`
+    });
 }
 
-function middlewareServerError(request, response) {
-    let error = new Error("Server error")
+function middlewareServerError(error, request, response, next) {
+    // importante poner los 4 params para llamar al middleware con next(error)
     response.status(500);
     response.json(error);
-    response.end();
 }
 
 database.on("error", function () {
     console.error("Error al conectar con la bd");
-})
+});
 
 database.once("open", function () {
     app.listen(config.port, function (err) {
