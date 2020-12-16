@@ -8,7 +8,7 @@ userRouter.get("/users", userController.getUsers);
 
 userRouter.get("/users/:id", userController.getUser);
 
-userRouter.post("/users");
+userRouter.post("/users", userController.saveUser);
 
 userRouter.post("/users/:id/update")
 
