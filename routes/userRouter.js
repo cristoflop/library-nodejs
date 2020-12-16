@@ -6,12 +6,13 @@ const userController = require("../controllers/userController.js");
 
 userRouter.get("/users", userController.getUsers);
 
-userRouter.get("/users/:id", userController.getUser);
-
 userRouter.post("/users", userController.saveUser);
 
-userRouter.post("/users/:id/update", userController.updateUserEmail);
+userRouter.delete("/users", userController.deleteUser);
 
-userRouter.delete("/users");
+userRouter.get("/users/:id", userController.getUser);
+
+userRouter.post("/users/:id", userController.updateUserEmail);
+
 
 module.exports = userRouter;

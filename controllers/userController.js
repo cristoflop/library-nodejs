@@ -56,22 +56,32 @@ async function updateUserEmail(request, response, next) {
     try {
         let email = request.body.email;
         let id = request.params.id;
-        let update = await User.update(
-            {
-                _id: id
-            },
+        let user = await User.findByIdAndUpdate(id,
             {
                 email: email
             });
         response.status(200);
-        response.json(update);
+        response.json(user);
     } catch (error) {
         next({
             message: error.message,
             details: error
         });
     }
+}
 
+async function deleteUser(request, response, next) {
+    try {
+        let id = request.body.id;
+        let user = await User.findByIdAndDelete(id);
+        response.status(200);
+        response.json(user);
+    } catch (error) {
+        next({
+            message: error.message,
+            details: error
+        });
+    }
 }
 
 module.exports = {
@@ -79,5 +89,6 @@ module.exports = {
     getUser: getUser,
     getUserByNick: getUserByNick,
     saveUser: saveUser,
-    updateUserEmail: updateUserEmail
+    updateUserEmail: updateUserEmail,
+    deleteUser: deleteUser
 }
