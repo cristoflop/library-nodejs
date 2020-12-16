@@ -6,7 +6,7 @@ const userController = require("../controllers/userController.js");
 
 userRouter.get("/users", userController.getUsers);
 
-userRouter.get("/users/:id");
+userRouter.get("/users/:id", userController.getUser);
 
 userRouter.post("/users");
 

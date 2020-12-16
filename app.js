@@ -6,6 +6,9 @@ const logger = require('morgan');
 const app = express();
 const config = require("./config");
 
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+
 const session = require("express-session");
 const mongoDBSession = require("connect-mongodb-session");
 const MongoDBStore = mongoDBSession(session);
@@ -28,6 +31,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(cookieParser());
 
 app.use('/api', userRouter);
 
