@@ -34,12 +34,14 @@ const middlewareSession = session({
 app.use(middlewareSession);
 
 const userRouter = require("./routes/userRouter");
+const bookRouter = require("./routes/bookRouter")
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
 app.use('/api', userRouter);
+app.use('/api', bookRouter);
 
 app.use(middlewareNotFound);
 app.use(middlewareServerError);
