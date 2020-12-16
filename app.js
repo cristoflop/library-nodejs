@@ -5,7 +5,7 @@ const logger = require('morgan');
 const app = express();
 
 const config = require("./config");
-const url = `mongodb://${config.dbConfig.host}:${config.dbConfig.databaseServerPort}/${config.dbConfig.database}aaa`;
+const url = `mongodb://${config.dbConfig.host}:${config.dbConfig.databaseServerPort}/${config.dbConfig.database}`;
 const mongoose = require("mongoose");
 mongoose.connect( // no hace falta el then
     url,
