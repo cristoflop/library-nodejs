@@ -4,21 +4,21 @@ const Book = require("../models/book");
 const User = require("../models/user");
 
 async function getBooks(request, response, next) {
-    let books = await Book.find().populate("uploader");
+    const books = await Book.find().populate("uploader");
     response.status(200);
     response.json(books)
 }
 
 async function saveBook(request, response, next) {
     try {
-        let uploaderId = request.body.uploader;
+        const uploaderId = request.body.uploader;
 
-        let user = await User.findById(uploaderId); // si no existe devuelve null
+        const user = await User.findById(uploaderId); // si no existe devuelve null
         if (user == null) {
             throw new Error("El usuario no existe");
         }
 
-        let savedBook = await new Book({
+        const savedBook = await new Book({
             title: request.body.title,
             summary: request.body.summary,
             author: request.body.author,
@@ -37,9 +37,9 @@ async function saveBook(request, response, next) {
 }
 
 async function getBook(request, response, next) {
-    let id = request.params.id;
+    const id = request.params.id;
     try {
-        let book = await Book.findById(id).populate("uploader");
+        const book = await Book.findById(id).populate("uploader");
         if (book == null) {
             throw new Error();
         }
