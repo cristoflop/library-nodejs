@@ -2,11 +2,12 @@
 
 const express = require('express');
 const logger = require('morgan');
-const app = express();
-
 const config = require("./config");
 const url = `mongodb://${config.dbConfig.host}:${config.dbConfig.databaseServerPort}/${config.dbConfig.database}`;
+const app = express();
 const mongoose = require("mongoose");
+const database = mongoose.connection;
+
 mongoose.connect( // no hace falta el then
     url,
     {
@@ -15,12 +16,11 @@ mongoose.connect( // no hace falta el then
         useUnifiedTopology: true
     }
 )
-const database = mongoose.connection;
 
 const userRouter = require("./routes/userRouter");
 const bookRouter = require("./routes/bookRouter")
 
-app.use(logger('dev'));
+app.use(logger(config.logging));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
@@ -47,8 +47,8 @@ database.on("error", function () {
     console.error("Error al conectar con la bd");
 });
 
-database.once("open", function () {
-    app.listen(config.port, function (err) {
+database.once("open", () => {
+    app.listen(config.port, err => {
         if (err)
             console.error(`No se ha podido iniciar el servidor: ${err.message}`)
         else

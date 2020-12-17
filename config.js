@@ -6,5 +6,6 @@ module.exports = {
         databaseServerPort: 27017,
         database: "library"
     },
+    logging: 'dev',
     port: 3000
 }

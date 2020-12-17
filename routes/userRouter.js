@@ -8,10 +8,10 @@ userRouter.get("/users", userController.getUsers);
 
 userRouter.post("/users", userController.saveUser);
 
-userRouter.delete("/users", userController.deleteUser);
+userRouter.delete("/users/:id", userController.deleteUser);
 
 userRouter.get("/users/:id", userController.getUser);
 
-userRouter.post("/users/:id", userController.updateUserEmail);
+userRouter.patch("/users/:id", userController.updateUserEmail);
 
 module.exports = userRouter;

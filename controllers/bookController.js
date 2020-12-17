@@ -2,54 +2,62 @@
 
 const Book = require("../models/book");
 const User = require("../models/user");
+const ObjectId = require('mongoose').Types.ObjectId;
 
 async function getBooks(request, response, next) {
     const books = await Book.find().populate("uploader");
     response.status(200);
-    response.json(books)
+    response.json(books.map(mapToDTO))
 }
 
 async function saveBook(request, response, next) {
-    try {
-        const uploaderId = request.body.uploader;
+    const uploader = request.body.uploader;
 
-        const user = await User.findById(uploaderId); // si no existe devuelve null
-        if (user == null) {
-            throw new Error("El usuario no existe");
-        }
+    const user = await User.findOne({nick: uploader});
 
-        const savedBook = await new Book({
-            title: request.body.title,
-            summary: request.body.summary,
-            author: request.body.author,
-            editorial: request.body.editorial,
-            publishYear: request.body.publishYear,
-            uploader: uploaderId
-        }).save();
-
-        response.status(200);
-        response.json(savedBook);
-    } catch (error) {
-        next({
-            message: error.message
-        });
+    if (user == null) {
+        response.status(404);
+        response.json({message: `User with nick '${uploader}' not found`});
+        return;
     }
+
+    const book = await new Book({
+        title: request.body.title,
+        summary: request.body.summary,
+        author: request.body.author,
+        editorial: request.body.editorial,
+        publishYear: request.body.publishYear,
+        uploader: user._id
+    }).save();
+
+    response.status(201);
+    response.location(`${request.baseUrl + request.path}/${book._id}`);
+    response.json();
 }
 
 async function getBook(request, response, next) {
     const id = request.params.id;
-    try {
-        const book = await Book.findById(id).populate("uploader");
-        if (book == null) {
-            throw new Error();
-        }
-        response.status(200);
-        response.json(book);
-    } catch (error) {
-        next({
-            message: `El libro con id '${id}' no existe`
-        });
+
+    if (!ObjectId.isValid(id)) {
+        response.status(400);
+        response.json({message: `Not valid id`});
+        return;
     }
+
+    const book = await Book.findById(id).populate("uploader");
+
+    if (book == null) {
+        response.status(404);
+        response.json({message: `Book with id ${id} not found`});
+        return;
+    }
+
+    response.status(200);
+    response.json(book);
 }
 
-module.exports = { getBooks, saveBook, getBook }
+function mapToDTO(book) {
+    return {id: book._id, title: book.title }
+}
+
+module.exports = {getBooks, saveBook, getBook}
