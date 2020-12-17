@@ -17,22 +17,6 @@ mongoose.connect( // no hace falta el then
 )
 const database = mongoose.connection;
 
-const session = require("express-session");
-const mongoDBSession = require("connect-mongodb-session");
-const MongoDBStore = mongoDBSession(session);
-const sessionStore = new MongoDBStore({
-    uri: url,
-    collection: "sessions"
-})
-
-const middlewareSession = session({
-    saveUninitialized: false,
-    secret: "foobar34",
-    resave: false,
-    store: sessionStore
-});
-app.use(middlewareSession);
-
 const userRouter = require("./routes/userRouter");
 const bookRouter = require("./routes/bookRouter")
 
@@ -68,6 +52,6 @@ database.once("open", function () {
         if (err)
             console.error(`No se ha podido iniciar el servidor: ${err.message}`)
         else
-            console.log(`Servidor arrancando en el puerto ${config.port}`)
+            console.log(`Servidor arrancado en el puerto ${config.port}`)
     });
 });
