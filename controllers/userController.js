@@ -12,7 +12,7 @@ async function getUser(request, response, next) {
     const id = request.params.id;
     const user = await User.findById(id);
     if (user == null) {
-        next({ message: `User with id: ${id} not found` });
+        next({message: `User with id: ${id} not found`});
         return;
     }
 
@@ -22,74 +22,39 @@ async function getUser(request, response, next) {
 
 async function getUserByNick(request, response, next) {
     const nick = request.params.nick;
-    try {
-        const user = await User.findOne({
-            nick: nick
-        });
-        if (user == null)
-            throw new Error();
-        response.status(200);
-        response.json(user);
-    } catch (error) {
-        next({
-            message: `User called ${nick} not found`
-        });
+    const user = await User.findOne({
+        nick
+    });
+    if (user == null) {
+        next({message: `User called ${nick} not found`});
+        return;
     }
+    response.status(200);
+    response.json(user);
 }
 
 async function saveUser(request, response, next) {
-    try {
-        const savedUser = await new User({
-            nick: request.body.nick,
-            email: request.body.email
-        }).save();
-        response.status(200);
-        response.json(savedUser);
-    } catch (error) {
-        next({
-            message: error.message,
-            details: error
-        });
-    }
+    const savedUser = await new User({
+        nick: request.body.nick,
+        email: request.body.email
+    }).save();
+    response.status(200);
+    response.json(savedUser);
 }
 
 async function updateUserEmail(request, response, next) {
-    try {
-        const email = request.body.email;
-        const id = request.params.id;
-        const user = await User.findByIdAndUpdate(id,
-            {
-                email: email
-            });
-        response.status(200);
-        response.json(user);
-    } catch (error) {
-        next({
-            message: error.message,
-            details: error
-        });
-    }
+    const email = request.body.email;
+    const id = request.params.id;
+    const user = await User.findByIdAndUpdate(id, {email});
+    response.status(200);
+    response.json(user);
 }
 
 async function deleteUser(request, response, next) {
-    try {
-        const id = request.body.id;
-        const user = await User.findByIdAndDelete(id);
-        response.status(200);
-        response.json(user);
-    } catch (error) {
-        next({
-            message: error.message,
-            details: error
-        });
-    }
+    const id = request.body.id;
+    const user = await User.findByIdAndDelete(id);
+    response.status(200);
+    response.json(user);
 }
 
-module.exports = {
-    getUsers: getUsers,
-    getUser: getUser,
-    getUserByNick: getUserByNick,
-    saveUser: saveUser,
-    updateUserEmail: updateUserEmail,
-    deleteUser: deleteUser
-}
+module.exports = { getUsers, getUser, getUserByNick, saveUser, updateUserEmail, deleteUser }
