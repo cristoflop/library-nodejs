@@ -3,33 +3,30 @@
 const User = require("../models/user");
 
 async function getUsers(request, response, next) {
-    let users = await User.find();
+    const users = await User.find();
     response.status(200);
     response.json(users);
 }
 
 async function getUser(request, response, next) {
-    let id = request.params.id;
-    try {
-        let user = await User.findById(id);
-        if (user == null)
-            throw new Error();
-        response.status(200);
-        response.json(user);
-    } catch (error) {
-        next({
-            message: `User with id: ${id} not found`
-        });
+    const id = request.params.id;
+    const user = await User.findById(id);
+    if (user == null) {
+        next({ message: `User with id: ${id} not found` });
+        return;
     }
+
+    response.status(200);
+    response.json(user);
 }
 
 async function getUserByNick(request, response, next) {
-    let nick = request.params.nick;
+    const nick = request.params.nick;
     try {
-        let user = await User.findOne({
+        const user = await User.findOne({
             nick: nick
-        })
-        if(user == null)
+        });
+        if (user == null)
             throw new Error();
         response.status(200);
         response.json(user);
@@ -42,7 +39,7 @@ async function getUserByNick(request, response, next) {
 
 async function saveUser(request, response, next) {
     try {
-        let savedUser = await new User({
+        const savedUser = await new User({
             nick: request.body.nick,
             email: request.body.email
         }).save();
@@ -58,9 +55,9 @@ async function saveUser(request, response, next) {
 
 async function updateUserEmail(request, response, next) {
     try {
-        let email = request.body.email;
-        let id = request.params.id;
-        let user = await User.findByIdAndUpdate(id,
+        const email = request.body.email;
+        const id = request.params.id;
+        const user = await User.findByIdAndUpdate(id,
             {
                 email: email
             });
@@ -76,8 +73,8 @@ async function updateUserEmail(request, response, next) {
 
 async function deleteUser(request, response, next) {
     try {
-        let id = request.body.id;
-        let user = await User.findByIdAndDelete(id);
+        const id = request.body.id;
+        const user = await User.findByIdAndDelete(id);
         response.status(200);
         response.json(user);
     } catch (error) {
