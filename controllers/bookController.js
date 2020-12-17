@@ -52,8 +52,4 @@ async function getBook(request, response, next) {
     }
 }
 
-module.exports = {
-    getBooks: getBooks,
-    saveBook: saveBook,
-    getBook: getBook
-}
+module.exports = { getBooks, saveBook, getBook }
