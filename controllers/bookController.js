@@ -2,13 +2,15 @@
 
 const Book = require("../models/book");
 const User = require("../models/user");
+const Comment = require("../models/comment");
 const ObjectId = require('mongoose').Types.ObjectId;
 const bookMapper = require("./mappers").bookMapper;
+const commentMapper = require("./mappers").commentMapper;
 
 async function getBooks(request, response, next) {
     const books = await Book.find().populate("uploader");
     response.status(200);
-    response.json(books.map(bookMapper))
+    response.json(books.map(book => bookMapper(book)));
 }
 
 async function saveBook(request, response, next) {
@@ -53,8 +55,70 @@ async function getBook(request, response, next) {
         return;
     }
 
+    const comments = await Comment.find({
+        book: id
+    }).populate("author");
+
     response.status(200);
-    response.json(book);
+    response.json({book: book, comments: comments});
 }
 
-module.exports = {getBooks, saveBook, getBook}
+async function publishComment(request, response, next) {
+    const bookId = request.params.id;
+
+    if (!ObjectId.isValid(bookId)) {
+        response.status(400);
+        response.json({message: `Not valid id`});
+        return;
+    }
+
+    const book = await Book.findById(bookId);
+    if (book == null) {
+        response.status(404);
+        response.json({message: `Book with id ${bookId} not found`});
+        return;
+    }
+
+    const authorId = request.body.author;
+    const user = await User.findById(authorId);
+    if (user == null) {
+        response.status(404);
+        response.json({message: `User with id ${authorId} not found`});
+        return;
+    }
+
+    const comment = (await new Comment({
+        body: request.body.body,
+        rating: request.body.rating,
+        book: bookId,
+        author: authorId
+    }).save()).populate("uploader");
+
+    response.status(200);
+    response.json(commentMapper(comment));
+}
+
+async function deleteComment(request, response, next) {
+    const bookId = request.params.id;
+
+    if (!ObjectId.isValid(bookId)) {
+        response.status(400);
+        response.json({message: `Not valid id`});
+        return;
+    }
+
+    const book = await Book.findById(bookId);
+    if (book == null) {
+        response.status(404);
+        response.json({message: `Book with id ${bookId} not found`});
+        return;
+    }
+
+    const commentId = request.body.id;
+    const comment = await Comment.findByIdAndDelete(commentId).populate("uploader");
+
+    response.status(200);
+    response.json(commentMapper(comment));
+}
+
+module.exports = {getBooks, saveBook, getBook, publishComment, deleteComment}
