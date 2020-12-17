@@ -1,11 +1,11 @@
 "use strict"
 
 function bookMapper(book) {
-    return {id: book._id, title: book.title }
+    return {id: book._id, title: book.title}
 }
 
 function commentMapper(comment) {
-    return {id: book._id, title: book.title }
+    return {id: comment._id, body: comment.body, rating: comment.rating, author: comment.author.nick}
 }
 
 function userMapper(user) {

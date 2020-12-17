@@ -1,6 +1,7 @@
 "use strict"
 
 const User = require("../models/user");
+const Comment = require("../models/comment");
 const ObjectId = require('mongoose').Types.ObjectId;
 const userMapper = require("./mappers").userMapper;
 
@@ -86,6 +87,13 @@ async function deleteUser(request, response, next) {
     if (!ObjectId.isValid(id)) {
         response.status(400);
         response.json({message: `Not valid id`});
+        return;
+    }
+
+    const userComments = await Comment.count({author: id});
+    if (userComments > 0) {
+        response.status(400);
+        response.json({message: `The user has associated comments`});
         return;
     }
 
