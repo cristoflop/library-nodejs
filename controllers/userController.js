@@ -2,11 +2,13 @@
 
 const User = require("../models/user");
 const ObjectId = require('mongoose').Types.ObjectId;
+const userMapper = require("./mappers").userMapper;
+
 
 async function getUsers(request, response, next) {
     const users = await User.find();
     response.status(200);
-    response.json(users.map(mapToDTO));
+    response.json(users.map(userMapper));
 }
 
 async function getUser(request, response, next) {
@@ -25,7 +27,7 @@ async function getUser(request, response, next) {
     }
 
     response.status(200);
-    response.json(mapToDTO(user));
+    response.json(userMapper(user));
 }
 
 async function getUserByNick(request, response, next) {
@@ -37,7 +39,7 @@ async function getUserByNick(request, response, next) {
         return;
     }
     response.status(200);
-    response.json(mapToDTO(user));
+    response.json(userMapper(user));
 }
 
 async function saveUser(request, response, next) {
@@ -96,10 +98,6 @@ async function deleteUser(request, response, next) {
 
     response.status(204);
     response.json();
-}
-
-function mapToDTO(user) {
-    return {id: user._id, nick: user.nick, email: user.email}
 }
 
 module.exports = {getUsers, getUser, getUserByNick, saveUser, updateUserEmail, deleteUser}

@@ -3,11 +3,12 @@
 const Book = require("../models/book");
 const User = require("../models/user");
 const ObjectId = require('mongoose').Types.ObjectId;
+const bookMapper = require("./mappers").bookMapper;
 
 async function getBooks(request, response, next) {
     const books = await Book.find().populate("uploader");
     response.status(200);
-    response.json(books.map(mapToDTO))
+    response.json(books.map(bookMapper))
 }
 
 async function saveBook(request, response, next) {
@@ -54,10 +55,6 @@ async function getBook(request, response, next) {
 
     response.status(200);
     response.json(book);
-}
-
-function mapToDTO(book) {
-    return {id: book._id, title: book.title }
 }
 
 module.exports = {getBooks, saveBook, getBook}
