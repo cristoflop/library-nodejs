@@ -4,11 +4,11 @@ const express = require('express');
 const logger = require('morgan');
 const config = require("./config");
 const url = `mongodb://${config.dbConfig.host}:${config.dbConfig.databaseServerPort}/${config.dbConfig.database}`;
-const app = express();
+const server = express();
 const mongoose = require("mongoose");
 const database = mongoose.connection;
 
-mongoose.connect( // no hace falta el then
+mongoose.connect(
     url,
     {
         useCreateIndex: true,
@@ -20,15 +20,14 @@ mongoose.connect( // no hace falta el then
 const userRouter = require("./routes/userRouter");
 const bookRouter = require("./routes/bookRouter")
 
-app.use(logger(config.logging));
-app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+server.use(logger(config.logging));
+server.use(express.json());
 
-app.use('/api', userRouter);
-app.use('/api', bookRouter);
+server.use('/api', userRouter);
+server.use('/api', bookRouter);
 
-app.use(middlewareNotFound);
-app.use(middlewareServerError);
+server.use(middlewareNotFound);
+server.use(middlewareServerError);
 
 function middlewareNotFound(request, response) {
     response.status(404);
@@ -38,7 +37,6 @@ function middlewareNotFound(request, response) {
 }
 
 function middlewareServerError(error, request, response, next) {
-    // importante poner los 4 params para llamar al middleware con next(error)
     response.status(500);
     response.json(error);
 }
@@ -48,7 +46,7 @@ database.on("error", function () {
 });
 
 database.once("open", () => {
-    app.listen(config.port, err => {
+    server.listen(config.port, err => {
         if (err)
             console.error(`No se ha podido iniciar el servidor: ${err.message}`)
         else
