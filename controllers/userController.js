@@ -104,7 +104,7 @@ async function deleteUser(request, response, next) {
 
     const userComments = await Comment.count({author: id});
     if (userComments > 0) {
-        response.status(400);
+        response.status(409);
         response.json({message: `The user has associated comments`});
         return;
     }
