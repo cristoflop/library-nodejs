@@ -12,6 +12,8 @@ userRouter.delete("/users/:id", userController.deleteUser);
 
 userRouter.get("/users/:id", userController.getUser);
 
+userRouter.get("/users/:id/comments", userController.getUserComments);
+
 userRouter.patch("/users/:id", userController.updateUserEmail);
 
 module.exports = userRouter;

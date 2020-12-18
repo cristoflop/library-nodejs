@@ -4,6 +4,7 @@ const User = require("../models/user");
 const Comment = require("../models/comment");
 const ObjectId = require('mongoose').Types.ObjectId;
 const userMapper = require("./mappers").userMapper;
+const commentMapper = require("./mappers").commentMapper;
 
 
 async function getUsers(request, response, next) {
@@ -31,16 +32,27 @@ async function getUser(request, response, next) {
     response.json(userMapper(user));
 }
 
-async function getUserByNick(request, response, next) {
-    const nick = request.params.nick;
-    const user = await User.findOne({nick});
-    if (user == null) {
-        response.status(404);
-        response.json({message: `User called '${nick}' not found`});
+async function getUserComments(request, response, next) {
+    const id = request.params.id;
+    if (!ObjectId.isValid(id)) {
+        response.status(400);
+        response.json({message: `Not valid id`});
         return;
     }
+
+    const user = await User.findById(id);
+    if (user == null) {
+        response.status(404);
+        response.json({message: `User with id '${id}' not found`});
+        return;
+    }
+
+    const userComments = await Comment.find({
+        author: id
+    })
+
     response.status(200);
-    response.json(userMapper(user));
+    response.json(commentMapper(userComments));
 }
 
 async function saveUser(request, response, next) {
@@ -108,4 +120,4 @@ async function deleteUser(request, response, next) {
     response.json();
 }
 
-module.exports = {getUsers, getUser, getUserByNick, saveUser, updateUserEmail, deleteUser}
+module.exports = {getUsers, getUser, getUserComments, saveUser, updateUserEmail, deleteUser}

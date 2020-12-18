@@ -5,7 +5,7 @@ function bookMapper(book) {
 }
 
 function commentMapper(comment) {
-    return {id: comment._id, body: comment.body, rating: comment.rating, author: comment.author.nick}
+    return {id: comment._id, body: comment.body, rating: comment.rating, author: comment.author.nick, book: comment.book}
 }
 
 function userMapper(user) {

@@ -10,8 +10,8 @@ bookRouter.post("/books", bookController.saveBook);
 
 bookRouter.get("/books/:id", bookController.getBook);
 
-bookRouter.post("/books/:id/comment", bookController.publishComment);
+bookRouter.post("/books/:bookId/comments", bookController.publishComment);
 
-bookRouter.delete("/books/:id/comment", bookController.deleteComment);
+bookRouter.delete("/books/:bookId/comments/:commentId", bookController.deleteComment);
 
 module.exports = bookRouter;
