@@ -4,6 +4,7 @@ const express = require('express');
 const logger = require('morgan');
 const fs = require('fs');
 const https = require('https');
+const helmet = require("helmet");
 const config = require("./config");
 const url = `mongodb://${config.dbConfig.host}:${config.dbConfig.databaseServerPort}/${config.dbConfig.database}`;
 const server = express();
@@ -24,6 +25,7 @@ const bookRouter = require("./routes/bookRouter")
 
 server.use(logger(config.logging));
 server.use(express.json());
+server.use(helmet());
 
 server.use('/api', userRouter);
 server.use('/api', bookRouter);
