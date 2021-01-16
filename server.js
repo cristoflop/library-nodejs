@@ -20,13 +20,15 @@ mongoose.connect(
     }
 )
 
+const loginRegisterRouter = require("./routes/loginRegisterRouter");
 const userRouter = require("./routes/userRouter");
-const bookRouter = require("./routes/bookRouter")
+const bookRouter = require("./routes/bookRouter");
 
 server.use(logger(config.logging));
 server.use(express.json());
 server.use(helmet());
 
+server.use("/auth", loginRegisterRouter);
 server.use('/api', userRouter);
 server.use('/api', bookRouter);
 
