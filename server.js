@@ -2,6 +2,8 @@
 
 const express = require('express');
 const logger = require('morgan');
+const fs = require('fs');
+const https = require('https');
 const config = require("./config");
 const url = `mongodb://${config.dbConfig.host}:${config.dbConfig.databaseServerPort}/${config.dbConfig.database}`;
 const server = express();
@@ -46,10 +48,10 @@ database.on("error", function () {
 });
 
 database.once("open", () => {
-    server.listen(config.port, err => {
-        if (err)
-            console.error(`No se ha podido iniciar el servidor: ${err.message}`)
-        else
-            console.log(`Servidor arrancado en el puerto ${config.port}`)
+    https.createServer({
+        key: fs.readFileSync('server.key'),
+        cert: fs.readFileSync('server.cert')
+    }, server).listen(config.port, () => {
+        console.log(`Servidor HTTPS arrancado en el puerto ${config.port}`)
     });
 });
