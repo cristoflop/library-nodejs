@@ -2,19 +2,10 @@
 
 const express = require("express");
 const loginRegisterRouter = express.Router();
+const loginRegisterController = require("../controllers/loginRegisterController");
 
-loginRegisterRouter.use(middlewareAccessControl);
+loginRegisterRouter.get("/login", loginRegisterController.login);
 
-loginRegisterRouter.post("/login", (request, response) => {
-    // login
-});
-
-loginRegisterRouter.post("/register", (request, response) => {
-    // registro
-});
-
-function middlewareAccessControl(request, response) {
-    // depende de donde se use esta funcion se podra acceder a los metodos de otros router o no
-}
+loginRegisterRouter.get("/register", loginRegisterController.register);
 
 module.exports = loginRegisterRouter;
