@@ -4,7 +4,6 @@ const User = require("../models/user");
 const userMapper = require("./mappers").userMapper
 
 async function login(request, response) {
-    // login
     const nick = request.body.nick;
     const password = request.body.password;
     let user = await User.findOne({nick, password});
@@ -16,11 +15,10 @@ async function login(request, response) {
     request.user = userMapper(user); // loged
     response.status(200);
     response.location(`${request.baseUrl + request.path}/${user._id}`);
-    response.json();
+    response.json({message: `Authentication successful`});
 }
 
 async function register(request, response) {
-    // register
     const nick = request.body.nick;
     const password = request.body.password;
     let user = await User.findOne({nick});
@@ -38,7 +36,7 @@ async function register(request, response) {
 
     response.status(201);
     response.location(`${request.baseUrl + request.path}/${user._id}`);
-    response.json();
+    response.json({message: `Register successful`});
 }
 
 module.exports = {

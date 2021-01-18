@@ -29,8 +29,8 @@ server.use(express.json());
 server.use(helmet());
 
 server.use("/auth", loginRegisterRouter);
-server.use('/api', userRouter);
 server.use('/api', bookRouter);
+server.use('/api', userRouter);
 
 server.use(middlewareNotFound);
 server.use(middlewareServerError);

@@ -6,11 +6,11 @@ const bookController = require("../controllers/bookController");
 
 const auth = require("../auth").authUser;
 
-bookRouter.use(auth);
-
 bookRouter.get("/books", bookController.getBooks);
 
-bookRouter.post("/books", bookController.saveBook);
+bookRouter.use(auth); // lo que esta por debajo de esta declaracion pasa por el middleware de autenticacion (importante el orden en app.js)
+
+bookRouter.post("/books", auth, bookController.saveBook);
 
 bookRouter.get("/books/:id", bookController.getBook);
 
