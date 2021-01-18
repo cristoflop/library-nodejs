@@ -1,6 +1,7 @@
 "use strict"
 
 const User = require("../models/user");
+const userMapper = require("./mappers").userMapper
 
 async function login(request, response) {
     // login
@@ -12,7 +13,7 @@ async function login(request, response) {
         response.json({message: `Authentication error, check nick or password`});
         return;
     }
-    request.user = user._id; // loged
+    request.user = userMapper(user); // loged
     response.status(200);
     response.location(`${request.baseUrl + request.path}/${user._id}`);
     response.json();

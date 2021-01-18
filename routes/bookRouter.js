@@ -4,6 +4,10 @@ const express = require("express");
 const bookRouter = express.Router();
 const bookController = require("../controllers/bookController");
 
+const auth = require("../auth").authUser;
+
+bookRouter.use(auth);
+
 bookRouter.get("/books", bookController.getBooks);
 
 bookRouter.post("/books", bookController.saveBook);
