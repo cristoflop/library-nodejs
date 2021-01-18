@@ -39,7 +39,14 @@ async function register(request, response) {
     response.json({message: `Register successful`});
 }
 
+function logout(request, response) {
+    request.session.user = null;
+    response.status(201);
+    response.json({message: "Logout successful"});
+}
+
 module.exports = {
     login,
-    register
+    register,
+    logout
 }
