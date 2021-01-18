@@ -4,12 +4,23 @@ const express = require('express');
 const logger = require('morgan');
 const fs = require('fs');
 const https = require('https');
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
 const config = require("./config");
 const url = `mongodb://${config.dbConfig.host}:${config.dbConfig.databaseServerPort}/${config.dbConfig.database}`;
 const server = express();
 const mongoose = require("mongoose");
 const database = mongoose.connection;
+
+const session = require("express-session");
+const middlewareSession = session({
+    saveUninitialized: false,
+    secret: "foobar34",
+    resave: false,
+    store: null
+});
+server.use(middlewareSession);
 
 mongoose.connect(
     url,
@@ -27,6 +38,9 @@ const bookRouter = require("./routes/bookRouter");
 server.use(logger(config.logging));
 server.use(express.json());
 server.use(helmet());
+
+server.use(bodyParser.urlencoded({extended: false}));
+server.use(cookieParser());
 
 server.use("/auth", loginRegisterRouter);
 server.use('/api', bookRouter);

@@ -12,7 +12,7 @@ async function login(request, response) {
         response.json({message: `Authentication error, check nick or password`});
         return;
     }
-    request.user = userMapper(user); // loged
+    request.session.user = userMapper(user); // loged
     response.status(200);
     response.location(`${request.baseUrl + request.path}/${user._id}`);
     response.json({message: `Authentication successful`});
@@ -29,7 +29,7 @@ async function register(request, response) {
     }
 
     user = await new User({
-        nick: request.body.nick,
+        nick: nick,
         email: request.body.email,
         password: password
     }).save();
